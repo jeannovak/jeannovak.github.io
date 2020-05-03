@@ -15,10 +15,6 @@ MESSAGE\r\n
 \r\n: Same thing as pressing enter.
 ```
 
-{% hint style="info" %}
-Super-powers are granted randomly so please submit an issue if you're not happy with yours.
-{% endhint %}
-
 ## REQUEST
 
 Example of GET HTTP request to google.com
