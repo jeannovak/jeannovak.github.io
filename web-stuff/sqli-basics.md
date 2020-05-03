@@ -302,7 +302,7 @@ First thing we can do to start exploting it is to discover the database version,
 
 or 1 in is the part of the query that will trigger the error, we are trying to find 1, an integer, within a varchar column.
 
-CAST\(&lt;FIELDNAME&gt; as varchar\(4096\)\) is 
+`CAST(<FIELDNAME> as varchar(4096)) is` 
 
 
 
