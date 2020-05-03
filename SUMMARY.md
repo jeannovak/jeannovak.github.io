@@ -1,14 +1,11 @@
-# Table of contents
+# Summary
 
 * [Yo](README.md)
 
 ## Web Stuff
-
-* [HTTP Basics](web-stuff/untitled-1.md)
+* [HTTP Basics](web-stuff/http-basics.md)
 * [SQLi Basics](web-stuff/sqli-basics.md)
-* [Untitled](web-stuff/untitled.md)
 
 ## Pentest Stuff
-
-* [SAMBA](pentest-stuff/untitled-1-1.md)
+* [SAMBA](pentest-stuff/SAMBA.md)
 
