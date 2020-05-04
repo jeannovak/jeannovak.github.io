@@ -2,8 +2,7 @@
 # checkout to the gh-pages branch
 git checkout gh-pages
 
-# pull the latest updates
-git pull origin gh-pages --rebase
+gitbook build 
 
 # copy the static site files into the current directory.
 cp -R _book/* .
