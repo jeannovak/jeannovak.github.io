@@ -297,7 +297,6 @@ First thing we can do to start exploting it is to discover the database version,
 ```text
 99999 or 1 in (SELECT TOP 1 CAST(<FIELDNAME> as varchar(4096)) from <TABLENAME> WHERE <FIELDNAME> NOT IN (<LIST>)); --
 ```
-
 * `99999` is a bogus value.
 * `or 1 in` is the part of the query that will trigger the error, we are trying to find 1, an integer, within a varchar column.
 * `CAST(<FIELDNAME> as varchar(4096))` is where we insert the column that we want to dump (either user-based or special database column). 
