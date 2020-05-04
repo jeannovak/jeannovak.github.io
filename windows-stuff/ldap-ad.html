@@ -1,0 +1,339 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>LDAP / AD · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    
+    <link rel="prev" href="samba.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Yo
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Web Stuff</li>
+        
+        
+    
+        <li class="chapter " data-level="2.1" data-path="../web-stuff/http-basics.html">
+            
+                <a href="../web-stuff/http-basics.html">
+            
+                    
+                    HTTP Basics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2" data-path="../web-stuff/sqli-basics.html">
+            
+                <a href="../web-stuff/sqli-basics.html">
+            
+                    
+                    SQLi Basics
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Windows stuff</li>
+        
+        
+    
+        <li class="chapter " data-level="3.1" data-path="basic-windows-enumeration.html">
+            
+                <a href="basic-windows-enumeration.html">
+            
+                    
+                    Basic Windows Enumeration
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.2" data-path="samba.html">
+            
+                <a href="samba.html">
+            
+                    
+                    SAMBA
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="3.3" data-path="ldap-ad.html">
+            
+                <a href="ldap-ad.html">
+            
+                    
+                    LDAP / AD
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >LDAP / AD</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="ldap--ad">LDAP / AD</h1>
+<p> Default md5sum </p>
+<pre><code class="lang-text">ldapsearch -h 10.10.10.161
+</code></pre>
+<p>Simple authentication </p>
+<pre><code class="lang-text">ldapsearch -h 10.10.10.161 -x
+</code></pre>
+<p>A suffix (also known as a naming context) is a DN that identifies the top entry in a locally held directory hierarchy.</p>
+<pre><code class="lang-text">ldapsearch -h 10.10.10.161 -x -s base namingcontexts
+
+dn: namingContexts: DC=htb,DC=local namingContexts: CN=Configuration,DC=htb,DC=local 
+namingContexts: CN=Schema,CN=Configuration,DC=htb,DC=local 
+namingContexts: DC=DomainDnsZones,DC=htb,DC=local 
+namingContexts: DC=ForestDnsZones,DC=htb,DC=local
+</code></pre>
+<p>Get everything from ldap htb.local </p>
+<pre><code class="lang-text">ldapsearch -h 10.10.10.161 -x -b &quot;DC=htb,DC=Dlocal&quot; &gt; ldap-anon.out
+</code></pre>
+<p>Information after -b is a query </p>
+<pre><code class="lang-text">ldapsearch -h 10.10.10.161 -x -b &quot;DC=htb,DC=Dlocal&quot; &apos;(ObjectClass=user)&apos;
+</code></pre>
+<p>Filter what you want from that query </p>
+<pre><code class="lang-text">ldapsearch -h 10.10.10.161 -x -b &quot;DC=htb,DC=Dlocal&quot; &apos;(ObjectClass=user)&apos; sAMAccountName 
+ldapsearch -h 10.10.10.161 -x -b &quot;DC=htb,DC=Dlocal&quot; &apos;(ObjectClass=user)&apos; sAMAccountName sAMAccountType
+</code></pre>
+<p>Grep all users</p>
+<pre><code class="lang-text">ldapsearch -h 10.10.10.161 -x -b &quot;DC=htb,DC=local&quot; &apos;(ObjectClass=Person)&apos; sAMAccountName | grep sAMAccountName | awk {&apos;print $2&apos;} &gt; userlist.ldap
+</code></pre>
+<p>Check deleted users </p>
+<pre><code class="lang-text">Get-ADObject -IncludeDeletedObjects -Filter {ObjectClass -eq &apos;user&apos; -and Isdeleted -eq $True}
+</code></pre>
+<p>Filter by displayname and then restore the object</p>
+<pre><code class="lang-text">Get-ADObject -IncludeDeletedObjects -Filter {ObjectClass -eq &apos;user&apos; -and DisplayName -eq &apos;TempAdmin&apos;} | RestoreADObject
+</code></pre>
+<p>Check details of the user</p>
+<pre><code class="lang-text"> Get-ADObject -IncludeDeletedObjects -Filter {ObjectClass -eq &apos;user&apos; -and DisplayName -eq &apos;TempAdmin&apos;} -Properties *
+</code></pre>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="samba.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: SAMBA">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"LDAP / AD","level":"3.3","depth":1,"previous":{"title":"SAMBA","level":"3.2","depth":1,"path":"windows-stuff/samba.md","ref":"windows-stuff/samba.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"windows-stuff/ldap-ad.md","mtime":"2020-05-04T01:29:24.929Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-05-04T01:29:34.117Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
