@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>LDAP / AD · GitBook</title>
+        <title>Enumeration · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -57,10 +57,8 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="../linux-stuff/exploitation.html" />
     
-    
-    <link rel="prev" href="samba.html" />
+    <link rel="prev" href="../linux-stuff/priviledge-escalation/sudo.html" />
     
 
     </head>
@@ -258,9 +256,9 @@
         
         
     
-        <li class="chapter " data-level="3.1" data-path="basic-windows-enumeration.html">
+        <li class="chapter " data-level="3.1" data-path="../windows-stuff/basic-windows-enumeration.html">
             
-                <a href="basic-windows-enumeration.html">
+                <a href="../windows-stuff/basic-windows-enumeration.html">
             
                     
                     Basic Windows Enumeration
@@ -271,9 +269,9 @@
             
         </li>
     
-        <li class="chapter " data-level="3.2" data-path="samba.html">
+        <li class="chapter " data-level="3.2" data-path="../windows-stuff/samba.html">
             
-                <a href="samba.html">
+                <a href="../windows-stuff/samba.html">
             
                     
                     SAMBA
@@ -284,9 +282,9 @@
             
         </li>
     
-        <li class="chapter active" data-level="3.3" data-path="ldap-ad.html">
+        <li class="chapter " data-level="3.3" data-path="../windows-stuff/ldap-ad.html">
             
-                <a href="ldap-ad.html">
+                <a href="../windows-stuff/ldap-ad.html">
             
                     
                     LDAP / AD
@@ -408,9 +406,9 @@
         
         
     
-        <li class="chapter " data-level="5.1" data-path="../enumeration/enumeration.html">
+        <li class="chapter active" data-level="5.1" data-path="enumeration.html">
             
-                <a href="../enumeration/enumeration.html">
+                <a href="enumeration.html">
             
                     
                     Enumeration
@@ -451,7 +449,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >LDAP / AD</a>
+        <a href=".." >Enumeration</a>
     </h1>
 </div>
 
@@ -466,43 +464,7 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="ldap--ad">LDAP / AD</h1>
-<p> Default md5sum </p>
-<pre><code class="lang-text">ldapsearch -h 10.10.10.161
-</code></pre>
-<p>Simple authentication </p>
-<pre><code class="lang-text">ldapsearch -h 10.10.10.161 -x
-</code></pre>
-<p>A suffix (also known as a naming context) is a DN that identifies the top entry in a locally held directory hierarchy.</p>
-<pre><code class="lang-text">ldapsearch -h 10.10.10.161 -x -s base namingcontexts
-
-dn: namingContexts: DC=htb,DC=local namingContexts: CN=Configuration,DC=htb,DC=local 
-namingContexts: CN=Schema,CN=Configuration,DC=htb,DC=local 
-namingContexts: DC=DomainDnsZones,DC=htb,DC=local 
-namingContexts: DC=ForestDnsZones,DC=htb,DC=local
-</code></pre>
-<p>Get everything from ldap htb.local </p>
-<pre><code class="lang-text">ldapsearch -h 10.10.10.161 -x -b &quot;DC=htb,DC=Dlocal&quot; &gt; ldap-anon.out
-</code></pre>
-<p>Information after -b is a query </p>
-<pre><code class="lang-text">ldapsearch -h 10.10.10.161 -x -b &quot;DC=htb,DC=Dlocal&quot; &apos;(ObjectClass=user)&apos;
-</code></pre>
-<p>Filter what you want from that query </p>
-<pre><code class="lang-text">ldapsearch -h 10.10.10.161 -x -b &quot;DC=htb,DC=Dlocal&quot; &apos;(ObjectClass=user)&apos; sAMAccountName 
-ldapsearch -h 10.10.10.161 -x -b &quot;DC=htb,DC=Dlocal&quot; &apos;(ObjectClass=user)&apos; sAMAccountName sAMAccountType
-</code></pre>
-<p>Grep all users</p>
-<pre><code class="lang-text">ldapsearch -h 10.10.10.161 -x -b &quot;DC=htb,DC=local&quot; &apos;(ObjectClass=Person)&apos; sAMAccountName | grep sAMAccountName | awk {&apos;print $2&apos;} &gt; userlist.ldap
-</code></pre>
-<p>Check deleted users </p>
-<pre><code class="lang-text">Get-ADObject -IncludeDeletedObjects -Filter {ObjectClass -eq &apos;user&apos; -and Isdeleted -eq $True}
-</code></pre>
-<p>Filter by displayname and then restore the object</p>
-<pre><code class="lang-text">Get-ADObject -IncludeDeletedObjects -Filter {ObjectClass -eq &apos;user&apos; -and DisplayName -eq &apos;TempAdmin&apos;} | RestoreADObject
-</code></pre>
-<p>Check details of the user</p>
-<pre><code class="lang-text"> Get-ADObject -IncludeDeletedObjects -Filter {ObjectClass -eq &apos;user&apos; -and DisplayName -eq &apos;TempAdmin&apos;} -Properties *
-</code></pre>
+                                <h1 id="enumeration">Enumeration</h1>
 
                                 
                                 </section>
@@ -530,14 +492,10 @@ ldapsearch -h 10.10.10.161 -x -b &quot;DC=htb,DC=Dlocal&quot; &apos;(ObjectClass
 
             
                 
-                <a href="samba.html" class="navigation navigation-prev " aria-label="Previous page: SAMBA">
+                <a href="../linux-stuff/priviledge-escalation/sudo.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: Sudo">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
-                
-                <a href="../linux-stuff/exploitation.html" class="navigation navigation-next " aria-label="Next page: Exploitation">
-                    <i class="fa fa-angle-right"></i>
-                </a>
                 
             
         
@@ -546,7 +504,7 @@ ldapsearch -h 10.10.10.161 -x -b &quot;DC=htb,DC=Dlocal&quot; &apos;(ObjectClass
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"LDAP / AD","level":"3.3","depth":1,"next":{"title":"Exploitation","level":"4.1","depth":1,"path":"linux-stuff/exploitation.md","ref":"linux-stuff/exploitation.md","articles":[]},"previous":{"title":"SAMBA","level":"3.2","depth":1,"path":"windows-stuff/samba.md","ref":"windows-stuff/samba.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"windows-stuff/ldap-ad.md","mtime":"2020-05-09T14:02:44.513Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-05-09T14:03:16.892Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Enumeration","level":"5.1","depth":1,"previous":{"title":"Sudo","level":"4.2.5","depth":2,"path":"linux-stuff/priviledge-escalation/sudo.md","ref":"linux-stuff/priviledge-escalation/sudo.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"enumeration/enumeration.md","mtime":"2020-05-09T14:02:44.505Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-05-09T14:03:16.892Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
