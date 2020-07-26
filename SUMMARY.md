@@ -10,16 +10,20 @@
   * [In-band SQLi](web-stuff/sqli/in-band-sqli.md)
   * [Error-based SQLi](web-stuff/sqli/error-based-sqli/README.md)
     * [MSSQL Server](web-stuff/sqli/error-based-sqli/mssql-server.md)
-    * [postgreSQL Server](web-stuff/sqli/error-based-sqli/postgresql-server.md)
     * [MySQL Server](web-stuff/sqli/error-based-sqli/mysql-server.md)
-  * [Blind SQLi](web-stuff/sqli/blind-sqli.md)
+    * [postgreSQL Server](web-stuff/sqli/error-based-sqli/postgresql-server.md)
+  * [Blind SQLi](web-stuff/sqli/blind-sqli/README.md)
+    * [Bisection Technique](web-stuff/sqli/blind-sqli/bisection-technique.md)
+    * [Time-Based Blind SQLi](web-stuff/sqli/blind-sqli/time-based-blind-sqli.md)
   * [SQLmap](web-stuff/sqli/sqlmap.md)
+* [LFI](web-stuff/lfi.md)
 
 ## Windows stuff
 
 * [Basic Windows Enumeration](windows-stuff/basic-windows-enumeration.md)
 * [SAMBA](windows-stuff/samba.md)
 * [LDAP / AD](windows-stuff/ldap-ad.md)
+* [Empire \(RIP\)](windows-stuff/empire-rip.md)
 
 ## LINUX STUFF
 

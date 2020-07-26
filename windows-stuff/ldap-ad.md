@@ -1,12 +1,12 @@
 # LDAP / AD
 
- Default md5sum 
+Default md5sum
 
 ```text
-ldapsearch -h 10.10.10.161 
+ldapsearch -h 10.10.10.161
 ```
 
-Simple authentication 
+Simple authentication
 
 ```text
 ldapsearch -h 10.10.10.161 -x
@@ -23,41 +23,41 @@ namingContexts: DC=DomainDnsZones,DC=htb,DC=local
 namingContexts: DC=ForestDnsZones,DC=htb,DC=local
 ```
 
-Get everything from ldap htb.local 
+Get everything from ldap htb.local
 
 ```text
-ldapsearch -h 10.10.10.161 -x -b "DC=htb,DC=Dlocal" > ldap-anon.out 
+ldapsearch -h 10.10.10.161 -x -b "DC=htb,DC=Dlocal" > ldap-anon.out
 ```
 
-Information after -b is a query 
+Information after -b is a query
 
 ```text
-ldapsearch -h 10.10.10.161 -x -b "DC=htb,DC=Dlocal" '(ObjectClass=user)' 
+ldapsearch -h 10.10.10.161 -x -b "DC=htb,DC=Dlocal" '(ObjectClass=user)'
 ```
 
-Filter what you want from that query 
+Filter what you want from that query
 
 ```text
 ldapsearch -h 10.10.10.161 -x -b "DC=htb,DC=Dlocal" '(ObjectClass=user)' sAMAccountName 
-ldapsearch -h 10.10.10.161 -x -b "DC=htb,DC=Dlocal" '(ObjectClass=user)' sAMAccountName sAMAccountType 
+ldapsearch -h 10.10.10.161 -x -b "DC=htb,DC=Dlocal" '(ObjectClass=user)' sAMAccountName sAMAccountType
 ```
 
 Grep all users
 
 ```text
-ldapsearch -h 10.10.10.161 -x -b "DC=htb,DC=local" '(ObjectClass=Person)' sAMAccountName | grep sAMAccountName | awk {'print $2'} > userlist.ldap 
+ldapsearch -h 10.10.10.161 -x -b "DC=htb,DC=local" '(ObjectClass=Person)' sAMAccountName | grep sAMAccountName | awk {'print $2'} > userlist.ldap
 ```
 
-Check deleted users 
+Check deleted users
 
 ```text
-Get-ADObject -IncludeDeletedObjects -Filter {ObjectClass -eq 'user' -and Isdeleted -eq $True} 
+Get-ADObject -IncludeDeletedObjects -Filter {ObjectClass -eq 'user' -and Isdeleted -eq $True}
 ```
 
 Filter by displayname and then restore the object
 
 ```text
-Get-ADObject -IncludeDeletedObjects -Filter {ObjectClass -eq 'user' -and DisplayName -eq 'TempAdmin'} | RestoreADObject 
+Get-ADObject -IncludeDeletedObjects -Filter {ObjectClass -eq 'user' -and DisplayName -eq 'TempAdmin'} | RestoreADObject
 ```
 
 Check details of the user

@@ -1,7 +1,5 @@
 # Basic Windows Enumeration
 
-
-
 ```text
 nmap -sC -sV $ip -Pn > nmap
 ```

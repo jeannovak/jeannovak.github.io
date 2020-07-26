@@ -183,9 +183,3 @@ Error-based is when you force the DBMS to output error messages and use that to 
 
 Blind SQL means the application does not reflect back the reply of you query, this means you can't see the output and needs to rely on true-false / binary conditions and requests, like 'Is the first letter of the user A? If not, waits 3 seconds before replying', and keep asking the database until you can gather enough information.
 
-
-
-
-
-i
-
