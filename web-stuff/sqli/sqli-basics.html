@@ -109,9 +109,9 @@
         
         
     
-        <li class="chapter " data-level="2.1" data-path="../http-basics.html">
+        <li class="chapter " data-level="2.1" data-path="../http-basics.md">
             
-                <a href="../http-basics.html">
+                <span>
             
                     
                     HTTP Basics
@@ -525,11 +525,18 @@
                                 <section class="normal markdown-section">
                                 
                                 <h1 id="sqli-basics">SQLi Basics</h1>
+<p>What you need to learn:</p>
+<ol>
+<li>SQL statement syntax</li>
+<li>How to perform a query</li>
+<li>How to union the results of two queries</li>
+<li>The DISTINCT and ALL operator</li>
+<li>How comments work</li>
+</ol>
 <p>SQL statement structure</p>
 <pre><code class="lang-text">&gt; SELECT &lt;column list&gt; FROM &lt;table&gt; WHERE &lt;conditions&gt;
 
 &gt; SELECT name, description FROM products WHERE id=9;
-&gt; SELECT 22, &apos;string&apos;, 0x12, &apos;another string&apos;;
 </code></pre>
 <p>UNION performs an union between two results:</p>
 <pre><code class="lang-text">&gt; &lt;select statement&gt; UNION &lt;second select statement&gt;;
@@ -537,7 +544,9 @@
 <p>If a table contains duplicate rows, use the DISTINCT operator to filter out duplicate entries</p>
 <pre><code class="lang-text">&gt; SELECT DISTINCT &lt;field list&gt; &lt;remainder of statement&gt;;
 </code></pre>
-<p>UNION statement implies DISTINCT by default.</p>
+<p>UNION statement implies DISTINCT by default, which can be prevented by the ALL operator:</p>
+<pre><code class="lang-text">&gt; &lt;SELECT statement&gt; UNION ALL &lt;other SELECT statement&gt;;
+</code></pre>
 <p>You can perform UNION with chosen data:</p>
 <pre><code class="lang-text">&gt; SELECT Name, Description FROM Products WHERE ID=&apos;2&apos; UNION SELECT &apos;Example&apos;, &apos;Data&apos;;
 </code></pre>
@@ -684,7 +693,7 @@ to your MySQL server vrsion for the right syntax to use near [query snippet]
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"SQLi Basics","level":"2.2.1","depth":2,"next":{"title":"In-band SQLi","level":"2.2.2","depth":2,"path":"web-stuff/sqli/in-band-sqli.md","ref":"web-stuff/sqli/in-band-sqli.md","articles":[]},"previous":{"title":"SQLi","level":"2.2","depth":1,"path":"web-stuff/sqli/README.md","ref":"web-stuff/sqli/README.md","articles":[{"title":"SQLi Basics","level":"2.2.1","depth":2,"path":"web-stuff/sqli/sqli-basics.md","ref":"web-stuff/sqli/sqli-basics.md","articles":[]},{"title":"In-band SQLi","level":"2.2.2","depth":2,"path":"web-stuff/sqli/in-band-sqli.md","ref":"web-stuff/sqli/in-band-sqli.md","articles":[]},{"title":"Error-based SQLi","level":"2.2.3","depth":2,"path":"web-stuff/sqli/error-based-sqli/README.md","ref":"web-stuff/sqli/error-based-sqli/README.md","articles":[{"title":"MSSQL Server","level":"2.2.3.1","depth":3,"path":"web-stuff/sqli/error-based-sqli/mssql-server.md","ref":"web-stuff/sqli/error-based-sqli/mssql-server.md","articles":[]},{"title":"MySQL Server","level":"2.2.3.2","depth":3,"path":"web-stuff/sqli/error-based-sqli/mysql-server.md","ref":"web-stuff/sqli/error-based-sqli/mysql-server.md","articles":[]},{"title":"postgreSQL Server","level":"2.2.3.3","depth":3,"path":"web-stuff/sqli/error-based-sqli/postgresql-server.md","ref":"web-stuff/sqli/error-based-sqli/postgresql-server.md","articles":[]}]},{"title":"Blind SQLi","level":"2.2.4","depth":2,"path":"web-stuff/sqli/blind-sqli/README.md","ref":"web-stuff/sqli/blind-sqli/README.md","articles":[{"title":"Bisection Technique","level":"2.2.4.1","depth":3,"path":"web-stuff/sqli/blind-sqli/bisection-technique.md","ref":"web-stuff/sqli/blind-sqli/bisection-technique.md","articles":[]},{"title":"Time-Based Blind SQLi","level":"2.2.4.2","depth":3,"path":"web-stuff/sqli/blind-sqli/time-based-blind-sqli.md","ref":"web-stuff/sqli/blind-sqli/time-based-blind-sqli.md","articles":[]}]},{"title":"SQLmap","level":"2.2.5","depth":2,"path":"web-stuff/sqli/sqlmap.md","ref":"web-stuff/sqli/sqlmap.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"web-stuff/sqli/sqli-basics.md","mtime":"2020-07-26T17:50:13.621Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-07-26T20:52:16.907Z"},"basePath":"../..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"SQLi Basics","level":"2.2.1","depth":2,"next":{"title":"In-band SQLi","level":"2.2.2","depth":2,"path":"web-stuff/sqli/in-band-sqli.md","ref":"web-stuff/sqli/in-band-sqli.md","articles":[]},"previous":{"title":"SQLi","level":"2.2","depth":1,"path":"web-stuff/sqli/README.md","ref":"web-stuff/sqli/README.md","articles":[{"title":"SQLi Basics","level":"2.2.1","depth":2,"path":"web-stuff/sqli/sqli-basics.md","ref":"web-stuff/sqli/sqli-basics.md","articles":[]},{"title":"In-band SQLi","level":"2.2.2","depth":2,"path":"web-stuff/sqli/in-band-sqli.md","ref":"web-stuff/sqli/in-band-sqli.md","articles":[]},{"title":"Error-based SQLi","level":"2.2.3","depth":2,"path":"web-stuff/sqli/error-based-sqli/README.md","ref":"web-stuff/sqli/error-based-sqli/README.md","articles":[{"title":"MSSQL Server","level":"2.2.3.1","depth":3,"path":"web-stuff/sqli/error-based-sqli/mssql-server.md","ref":"web-stuff/sqli/error-based-sqli/mssql-server.md","articles":[]},{"title":"MySQL Server","level":"2.2.3.2","depth":3,"path":"web-stuff/sqli/error-based-sqli/mysql-server.md","ref":"web-stuff/sqli/error-based-sqli/mysql-server.md","articles":[]},{"title":"postgreSQL Server","level":"2.2.3.3","depth":3,"path":"web-stuff/sqli/error-based-sqli/postgresql-server.md","ref":"web-stuff/sqli/error-based-sqli/postgresql-server.md","articles":[]}]},{"title":"Blind SQLi","level":"2.2.4","depth":2,"path":"web-stuff/sqli/blind-sqli/README.md","ref":"web-stuff/sqli/blind-sqli/README.md","articles":[{"title":"Bisection Technique","level":"2.2.4.1","depth":3,"path":"web-stuff/sqli/blind-sqli/bisection-technique.md","ref":"web-stuff/sqli/blind-sqli/bisection-technique.md","articles":[]},{"title":"Time-Based Blind SQLi","level":"2.2.4.2","depth":3,"path":"web-stuff/sqli/blind-sqli/time-based-blind-sqli.md","ref":"web-stuff/sqli/blind-sqli/time-based-blind-sqli.md","articles":[]}]},{"title":"SQLmap","level":"2.2.5","depth":2,"path":"web-stuff/sqli/sqlmap.md","ref":"web-stuff/sqli/sqlmap.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"web-stuff/sqli/sqli-basics.md","mtime":"2020-07-31T19:42:02.535Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-07-31T22:43:06.797Z"},"basePath":"../..","book":{"language":""}});
         });
     </script>
 </div>

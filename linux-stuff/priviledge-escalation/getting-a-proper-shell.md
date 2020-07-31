@@ -2,11 +2,18 @@
 
 If you got a crappy shell, you can fully up it to a full bash terminal.
 
+First we need to call bash, I know two ways to do that:
+
 Call bash via python or python3:
 
 ```text
 python -c 'import pty; pty.spawn("/bin/bash")'
 python3 -c 'import pty; pty.spawn("/bin/bash")'
+```
+Call it via script:
+
+```text
+/usr/bin/script -qc /bin/bash /dev/null
 ```
 
 background it with ctrl + z

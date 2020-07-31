@@ -1,12 +1,19 @@
 # SQLi Basics
 
+What you need to learn:
+
+1. SQL statement syntax
+2. How to perform a query
+3. How to union the results of two queries
+4. The DISTINCT and ALL operator
+5. How comments work
+
 SQL statement structure
 
 ```text
 > SELECT <column list> FROM <table> WHERE <conditions>
 
 > SELECT name, description FROM products WHERE id=9;
-> SELECT 22, 'string', 0x12, 'another string';
 ```
 
 UNION performs an union between two results:
@@ -21,7 +28,11 @@ If a table contains duplicate rows, use the DISTINCT operator to filter out dupl
 > SELECT DISTINCT <field list> <remainder of statement>;
 ```
 
-UNION statement implies DISTINCT by default.
+UNION statement implies DISTINCT by default, which can be prevented by the ALL operator:
+
+```text
+> <SELECT statement> UNION ALL <other SELECT statement>;
+```
 
 You can perform UNION with chosen data:
 
