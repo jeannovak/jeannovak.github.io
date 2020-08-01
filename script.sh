@@ -1,6 +1,6 @@
 #!/bin/bash
 # checkout to the gh-pages branch
-git checkout gh-pages
+#git checkout gh-pages
 
 gitbook build 
 
@@ -21,4 +21,4 @@ git commit -a -m "Update docs"
 git push origin gh-pages
 
 # checkout to the master branch
-git checkout master
+#git checkout master
