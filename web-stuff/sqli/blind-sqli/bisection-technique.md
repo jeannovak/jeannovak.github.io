@@ -28,18 +28,16 @@ Now we need to evaluate the results:
 * If the second query returns FALSE and the second is TRUE, the character is lowercase. So we will iterate through \[a-z\] 
 * If both queries are TRUE, the character is either a number or a symbol. So we will iterate through \[0-9\] and symbols only.
 
-Now, for example, you discovered that the character is lowercase. After that, you need to detect the first character.  One way to decrease your scope by asking the server if the character ASCII value is higher or lower than an arbitrary ASCII value:
+Now, for example, you discovered that the character is lowercase. After that, you need to detect the first character. One way to decrease your scope by asking the server if the character ASCII value is higher or lower than an arbitrary ASCII value:
 
 ```text
 ' OR ASCII(SUBSTRING(user(),1,1)) <=109
 ```
 
-For example, right now, we're asking if the ASCII value of the first character of the username is lower than 109. Lowercase ASCII values goes from 97-122. In this case, 109 would be M, which is in the middle of the alphabet. 
+For example, right now, we're asking if the ASCII value of the first character of the username is lower than 109. Lowercase ASCII values goes from 97-122. In this case, 109 would be M, which is in the middle of the alphabet.
 
 * If the application returns FALSE, you now the first character ASCII value is higher than 109, that means it can only be N-Z. 
 * If it returns TRUE, you now the first character ASCII value is lower than 109, that means it can only be A-M.
 
 This can be repeated indefinitely until you discover the first char. Always halving the scope of ASCII characters.
-
-
 
