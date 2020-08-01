@@ -23,5 +23,3 @@ dbname=# select cast ((select table name from information schema.tables limit 1 
 ERROR: invalid input syntax for type numeric: "pg_attribute"
 ```
 
-
-

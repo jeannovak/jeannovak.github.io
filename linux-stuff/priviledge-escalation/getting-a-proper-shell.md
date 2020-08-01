@@ -10,6 +10,7 @@ Call bash via python or python3:
 python -c 'import pty; pty.spawn("/bin/bash")'
 python3 -c 'import pty; pty.spawn("/bin/bash")'
 ```
+
 Call it via script:
 
 ```text

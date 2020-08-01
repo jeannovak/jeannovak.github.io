@@ -22,9 +22,9 @@ The query probably looks something like this:
 SELECT filename, views FROM images WHERE id='';
 ```
 
-So we can trigger an always true condition and see if the expected result still returns. 
+So we can trigger an always true condition and see if the expected result still returns.
 
-`' OR 'a'='a'` 
+`' OR 'a'='a'`
 
 `' OR '1'='1`
 
@@ -36,7 +36,7 @@ If this does not find anything in the database, in a sense that it does not retu
 
 After that, you can ask the database questions like:
 
-Is the first letter of the username 'a'?   
+Is the first letter of the username 'a'?  
 Does this databsae contain three tables?
 
 Lets say if we are attacking an MySQL database and we want to find the current database user. We will use two MySQL functions, `user()` and `substring()`
@@ -64,7 +64,7 @@ By combining those features, we can iterate over the letters of the username by 
 
 ```text
 ' or substr(user(), 1, 1) = 'a 
-' or substr(user(), 1, 1) = 'b 
+' or substr(user(), 1, 1) = 'b
 ```
 
 When we find the first letter, we can move to the second

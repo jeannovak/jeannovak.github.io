@@ -4,10 +4,12 @@
 
 ## Web Stuff
 
-* [HTTP Basics](web-stuff/http-basics.md)
+* [HTTP](web-stuff/http/README.md)
+  * [The Basics](web-stuff/http/the-basics.md)
 * [SQLi](web-stuff/sqli/README.md)
   * [SQLi Basics](web-stuff/sqli/sqli-basics.md)
-  * [In-band SQLi](web-stuff/sqli/in-band-sqli.md)
+  * [In-band SQLi](web-stuff/sqli/in-band-sqli/README.md)
+    * [Example](web-stuff/sqli/in-band-sqli/example.md)
   * [Error-based SQLi](web-stuff/sqli/error-based-sqli/README.md)
     * [MSSQL Server](web-stuff/sqli/error-based-sqli/mssql-server.md)
     * [MySQL Server](web-stuff/sqli/error-based-sqli/mysql-server.md)
@@ -16,7 +18,8 @@
     * [Bisection Technique](web-stuff/sqli/blind-sqli/bisection-technique.md)
     * [Time-Based Blind SQLi](web-stuff/sqli/blind-sqli/time-based-blind-sqli.md)
   * [SQLmap](web-stuff/sqli/sqlmap.md)
-* [LFI](web-stuff/lfi.md)
+* [File and Resources Attacks](web-stuff/lfi/README.md)
+  * [LFI](web-stuff/lfi/lfi.md)
 
 ## Windows stuff
 
@@ -38,5 +41,4 @@
 ## ENUMERATION
 
 * [Enumeration](enumeration/enumeration.md)
-
 

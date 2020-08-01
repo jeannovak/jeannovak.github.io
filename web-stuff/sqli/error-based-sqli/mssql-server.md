@@ -4,8 +4,6 @@ In MSSQL, the name of the database objects are revealed within errors. the user 
 
 First thing we can do to start exploting it is to discover the database version, we can trigger a type conversion error for that.
 
-
-
 ```text
 99999 or 1 in (SELECT TOP 1 CAST(<FIELDNAME> as varchar(4096)) from <TABLENAME> WHERE <FIELDNAME> NOT IN (<LIST>)); --
 ```
