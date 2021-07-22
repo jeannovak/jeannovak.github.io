@@ -40,5 +40,3 @@
 
 ## ENUMERATION
 
-* [Initial page](enumeration/enumeration.md)
-
