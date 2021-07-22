@@ -16,15 +16,15 @@ Trying a commentary: `Tom' -- -` returns the result normally, so we identified i
 
 So now, we need to define some stuff:
 
-**1. What we think the query is:**  
-  
+**1. What we think the query is:**
+
 `SELECT * FROM USERS WHERE FIRST_NAME = 'userinput'-- -`
 
-**2. What we want to do:** 
+**2. What we want to do:**
 
 Explore UNION queries to gather data.
 
-**3. What do we need to do UNION:** 
+**3. What do we need to do UNION:**
 
 Understand the \* from the first query. Because UNION only works when the query is balanced in a sense that you need both the primary and the subquery to parse the same number of 'fields'.
 
