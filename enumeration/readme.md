@@ -1,4 +1,4 @@
-# Yo
+# Initial page
 
 Hi, my name is Jean Novak and at the moment I'm a Cybersecurity Engineer @ [ipTrust](https://www.iptrust.com.br). This is a \(work-in-progress, I admit\) repository for useful stuff I discovered, learned and developed through the years of messing around with network and, since last year, with pentest and purple team.
 
