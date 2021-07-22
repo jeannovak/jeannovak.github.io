@@ -1,6 +1,6 @@
 # Initial page
 
-Hi, my name is Jean Novak and at the moment I'm a Cybersecurity Engineer @ [ipTrust](https://www.iptrust.com.br). This is a \(work-in-progress, I admit\) repository for useful stuff I discovered, learned and developed through the years of messing around with network and, since last year, with pentest and purple team.
+Hi, my name is Jean Novak and at the moment I'm a Cybersecurity Engineer @ [ipTrust](https://www.iptrust.com.br). This is a work-in-progress \(Still at the early stages, I admit\) repository for useful stuff I discovered, learned and developed through the years of messing around with network and, since last year, with pentest and purple team.
 
 I have been really focused in Cisco R&S, Security and Datacenter, Palo Alto firewalls and Windows/Linux integrations which such products. However I have been diving deep in Web Security/Pentesting and forensics after achieving a Bronze medal in cybersecurity at WorldSkills 2019.
 
