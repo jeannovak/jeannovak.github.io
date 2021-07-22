@@ -40,5 +40,5 @@
 
 ## ENUMERATION
 
-* [Initial page](enumeration/readme.md)
+* [Initial page](enumeration/enumeration.md)
 

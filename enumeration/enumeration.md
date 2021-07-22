@@ -1,14 +1,8 @@
-# Enumeration
+# Initial page
 
-Gobuster - HTTP/s diretory enumeration
+Hi, my name is Jean Novak and at the moment I'm a Cybersecurity Engineer @ [ipTrust](https://www.iptrust.com.br). This is a \(work-in-progress, I admit\) repository for useful stuff I discovered, learned and developed through the years of messing around with network and, since last year, with pentest and purple team.
 
-`gobuster dir -u http://sneakycorp.htb -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x php -o gobuster-out.txt`
+I have been really focused in Cisco R&S, Security and Datacenter, Palo Alto firewalls and Windows/Linux integrations which such products. However I have been diving deep in Web Security/Pentesting and forensics after achieving a Bronze medal in cybersecurity at WorldSkills 2019.
 
-Fuff - subdomain enumeeration
-
-`ffuf -c -w /usr/share/wordlists/dirb/common.txt -u http://sneakycorp.htb -H "Host: FUZZ.sneakycorp.htb" -fs 185`
-
-Wfuzz - creds, files, domains, fuzzing:
-
-`wfuzz -z file,users -z file,passwords -m zip -u` [`http://10.10.40.100/manage.php`](http://10.10.40.100/manage.php) `-d "username=FUZZ&password=FUZ2Z"`
+Right now you can find me on [linkedin](https://www.linkedin.com/in/jeannovak). I also have been active in the HackTheBox community, here's my [profile](https://www.hackthebox.eu/home/users/profile/58822). On discord, my username is solrak\#8569, add me there to discuss about security
 
